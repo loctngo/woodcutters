@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="cocos2d-html5-v2.2.3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/doc/cocos2d-html5-v2.2.3.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

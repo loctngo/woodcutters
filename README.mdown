@@ -1,0 +1,5 @@
+This game is built on top of Cocos2d HTML5 framework to demonstrate 2 parallel scheduling algorithms in non-preemptive mode (Multifit) and preemptive mode (Leung-Young). Like playing a Sodoku puzzle, in this game players will cut the logs and place them to the grid within constraints set up by those 2 scheduling algorithms. You have to solve this puzzle to clear the stage. A higher level will appear with more logs to add up the difficulty.
+
+This game is not only working for my Master Final Project at California State Polytechnic - Pomona, but it is also fun and challenging puzzle game for players.
+
+The project also contains the original cocos2d-html5-v2.2.3.zip for reference.

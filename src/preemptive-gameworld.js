@@ -505,7 +505,10 @@ var PreemptiveGameWorld = cc.Layer.extend({
         this.logLabel.runAction(cc.Sequence.create(cc.EaseSineIn.create(cc.ScaleTo.create(0.125, 1.1)), cc.EaseSineOut.create(cc.ScaleTo.create(0.125, 1))));
         this.cSumLabel.runAction(cc.Sequence.create(cc.EaseSineIn.create(cc.ScaleTo.create(0.125, 1.1)), cc.EaseSineOut.create(cc.ScaleTo.create(0.125, 1))));
         if(this.facility.unassignedJobIds().length == 0 && this.facility.cSum()<=this.facility.maxTC){
+            //disable touching everything else except the dialog
             this.setTouchEnabled(false);
+            this.pauseButton.setEnabled(false);
+            this.unschedule(this.updateTimer);
             this.runAction(cc.Sequence.create(cc.DelayTime.create(2), cc.CallFunc.create(function(){
                 this.showGameWonPopup();
             }, this)));
@@ -1241,7 +1244,7 @@ var PreemptiveGameWorld = cc.Layer.extend({
         setCookie('preemptiveLevel',preemptiveLevel,365);
 
         // create a black semi-transparent layer
-        this.popup = cc.LayerColor.create(cc.c4b(0, 0, 0, 196), this.screenSize.width, this.screenSize.height);
+        this.popup = cc.LayerColor.create(cc.c3b(0, 0, 0), this.screenSize.width, this.screenSize.height);
         // set opacity so that it is not visible
         this.popup.setOpacity(0);
         // fade it in
@@ -1301,8 +1304,6 @@ var PreemptiveGameWorld = cc.Layer.extend({
         this.setTouchEnabled(true);
         // enable pause button
         this.pauseButton.setEnabled(true);
-        // resume the time label's actions
-        this.timeLabel.resumeSchedulerAndActions();
         cc.AudioEngine.getInstance().playEffect(s_Select_m4a);
     },
 

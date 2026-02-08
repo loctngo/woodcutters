@@ -508,7 +508,7 @@ var PreemptiveGameWorld = cc.Layer.extend({
             //disable touching everything else except the dialog
             this.setTouchEnabled(false);
             this.pauseButton.setEnabled(false);
-            this.unschedule(this.updateTimer);
+            this.unscheduleAllCallbacks();
             this.runAction(cc.Sequence.create(cc.DelayTime.create(2), cc.CallFunc.create(function(){
                 this.showGameWonPopup();
             }, this)));
@@ -1181,8 +1181,6 @@ var PreemptiveGameWorld = cc.Layer.extend({
     },
 
     onPauseClicked:function(){
-        // pause the time label if it is animating
-        this.timeLabel.pauseSchedulerAndActions();
         // disable touch
         this.setTouchEnabled(false);
         // this will pause all schedulers and actions associated with the PreemptiveGameWorld layer
@@ -1201,7 +1199,7 @@ var PreemptiveGameWorld = cc.Layer.extend({
 
     showPausePopup:function(){
         // create a black semi-transparent layer
-        this.popup = cc.LayerColor.create(cc.c4b(0, 0, 0, 196), this.screenSize.width, this.screenSize.height);
+        this.popup = cc.LayerColor.create(cc.c3b(0, 0, 0), this.screenSize.width, this.screenSize.height);
         // set opacity so that it is not visible
         this.popup.setOpacity(0);
         // fade it in

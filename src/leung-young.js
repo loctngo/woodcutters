@@ -24,28 +24,35 @@ function randomGeneratePreemptive(nJobs, pMax){
 }
 
 function LeungYoung(P,m){
-    while(P.length%m!=0 || P.length==m)
-        P = [0].concat(P);
+    while(P.length%m != 0 || P.length == m){
+		P = [0].concat(P);
+    }
+
     var n = P.length;
     var C = [];
-    for(var i=0;i<n;i++)
-        C.push(0);
+    for(var i=0;i<n;i++){
+		C.push(0);
+	}
+
     //add first n-m to table
     var F = [];
-    for(var i=0;i<m;i++)
-        F.push(0);
+    for(var i=0;i<m;i++){
+		F.push(0);
+    }
 
     for(var j=0;j<n-m;j++){
         var minF = INF;
         var index = -1;
-        for(var i=0;i<m;i++)
-            if(minF>F[i]){
+        for(var i=0;i<m;i++){
+            if(minF > F[i]){
                 minF = F[i];
                 index = i;
             }
-        F[index]+=P[j];
+		}
+        F[index] += P[j];
         C[j] = F[index];
     }
+    
     //calculate OFT
     var OFT = 0;
     for(var i=0;i<m;i++){
@@ -55,7 +62,7 @@ function LeungYoung(P,m){
             p += F[j] + P[n-1-j];
             r++;
         }
-        p/=r;
+        p /= r;
         OFT = Math.max(OFT,p);
     }
 
@@ -65,19 +72,22 @@ function LeungYoung(P,m){
 
     //add last m jobs to table
     var B = [];
-    for(var i=0;i<m;i++)
+    for(var i=0;i<m;i++){
         B.push(true);
+    }
 
     for(var i=n-1;i>=n-m;i--){
         //check fit the least capacity
         var machineId = -1;
-        for(var j=m-1;j>=0;j--)
+        for(var j=m-1;j>=0;j--){
             if(B[j]){
-                if(OFT-F[j]>=P[i])
-                    machineId = j;
+                if(OFT-F[j]>=P[i]){
+					machineId = j;
+				}
                 break;
             }
-
+		}
+		
         if(machineId!=-1){
             C[i] = F[machineId] + P[i];
             B[machineId] = false;
@@ -86,50 +96,35 @@ function LeungYoung(P,m){
 
         //check perfectly fit
         machineId = -1;
-        for(var j=0;j<m;j++)
-            if(B[j] && P[i]==OFT-F[j]){
+        for(var j=0;j<m;j++){
+            if(B[j] && P[i] == OFT-F[j]){
                 machineId = j;
                 break;
             }
+        }
+            
         if(machineId!=-1){
             C[i] = F[machineId] + P[i];
             B[machineId] = false;
             continue;
         }
 
-        //OFT - F[l] < P[i] < OFT - F[u], u < l &&
-        //                    B[u] == true &&
-        //                    B[l] == true &&
-        //                    B[k] == false, for all u < b < l
-        var l,u;
-        for(var j=m;j>=0;j--){
-            l=-1;
-            u=-1;
-            if(B[j] && P[i]>OFT-F[j]){
-                l = j;
-                for(var k=j-1;k>=0;k--){
-                    if(!B[k])
-                        continue;
-                    if(P[i]>OFT-F[k])
-                        break;
-                    else{
-                        u = k;
-                        break;
-                    }
-                }
-            }
-            if(l!=-1&&u!=-1)
+		//must be existing j & j+1 such as: B[j] = true & B[j+1] = true & OFT-F[j] > P[i] > OFT-F[j+1]
+        for(var j=0;j<m-1;j++){
+            if(B[j] && B[j+1] && OFT-F[j] > P[i] && P[i] > OFT-F[j+1]){
+				F[j] += P[i] - (OFT-F[j+1]);
+		        F[j+1] = OFT;
+		        C[i] = OFT;
+		        B[j+1] = false;
                 break;
+            }
         }
-
-        F[u] += P[i] - (OFT-F[l]);
-        F[l] = OFT;
-        C[i] = OFT;
-        B[l] = false;
     }
 
     var cSum = 0;
-    for(var i=0;i<n;i++)
-        cSum += C[i];
+    for(var i=0;i<n;i++){
+		cSum += C[i];
+    }
+
     return {cMax: OFT, cSum : cSum};
 }

@@ -40,17 +40,10 @@ function LeungYoung(P,m){
         F.push(0);
     }
 
-    for(var j=0;j<n-m;j++){
-        var minF = INF;
-        var index = -1;
-        for(var i=0;i<m;i++){
-            if(minF > F[i]){
-                minF = F[i];
-                index = i;
-            }
-        }
-        F[index] += P[j];
-        C[j] = F[index];
+    for(var i=0;i<n-m;i++){
+        var machineId = i%m;
+        F[machineId] += P[i];
+        C[i] = F[machineId];
     }
     
     //calculate OFT

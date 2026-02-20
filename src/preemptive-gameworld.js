@@ -855,7 +855,7 @@ var PreemptiveGameWorld = cc.Layer.extend({
             //make sure there's no conflict after popping the segment
             var segment = this.facility.segments[segmentId];
             var jobId = segment.jobId;
-            processingTime = segment.processingTime;
+            var processingTime = segment.processingTime;
             segment.processingTime = 0;
             var conflict = this.facility.conflict();
             segment.processingTime = processingTime;
@@ -881,6 +881,38 @@ var PreemptiveGameWorld = cc.Layer.extend({
                 }
 
                 this.facility.assignments[machineId].splice(segmentIndex,1);
+                
+                //merge segmentIndex - 1 and segmentIndex
+                segments = this.facility.assignments[machineId];
+                if(segmentIndex-1 >= 0 && segmentIndex < segments.length){
+                	var prevSegmentId = segments[segmentIndex-1];
+                	var currentSegmentId = segments[segmentIndex];
+                	var prevSegment = this.facility.segments[prevSegmentId];
+                	var currentSegment = this.facility.segments[currentSegmentId];
+                	if(prevSegment.jobId == currentSegment.jobId){
+                		var _processingTime = prevSegment.processingTime + currentSegment.processingTime;
+                		var center = this.segmentSprites[prevSegmentId].getPosition();
+	                    center = cc.pAdd(center,cc.p(0,currentSegment.processingTime*SLICE_SIZE/2));
+	                    
+                		this.segmentSprites[prevSegmentId].removeFromParent(true);
+                		this.segmentSprites[prevSegmentId] = null;
+                		this.segmentSpritePositions[prevSegmentId] = null;
+                		this.segmentSprites[currentSegmentId].removeFromParent(true);
+                		this.segmentSprites[currentSegmentId] = null;
+                		this.segmentSpritePositions[currentSegmentId] = null;
+                		
+	                    var segmentSprite = cc.Sprite.create(WOODS[_processingTime]);
+				        segmentSprite.setColor(this.facility.jobs[prevSegment.jobId].color);
+				        segmentSprite.setPosition(center);
+				        this.addChild(segmentSprite);
+	                    this.segmentSprites[prevSegmentId] = segmentSprite;
+	                    this.segmentSpritePositions[prevSegmentId] = center;
+	                    
+	                    this.facility.assignments[machineId].splice(segmentIndex);
+	                    this.facility.segments[prevSegmentId].processingTime = _processingTime;
+	                    delete this.facility.segments[currentSegmentId];
+                	}
+                }
 
                 //merge this popped up segment to the unassigned segment which shares the same job
                 var merged = false;
@@ -1015,7 +1047,7 @@ var PreemptiveGameWorld = cc.Layer.extend({
         var segmentIds = this.facility.assignments[machineId];
         var lastSegmentId = segmentIds.length>0 ? segmentIds[segmentIds.length-1] : null;
         var lastJobId = lastSegmentId == null ? null : this.facility.segments[lastSegmentId].jobId;
-        if(lastJobId==jobId){
+        if(lastJobId == jobId && this.facility.segments[lastSegmentId].processingTime > 0){
             var lastCenter = this.segmentSprites[lastSegmentId].getPosition();
             this.segmentSprites[lastSegmentId].removeFromParent(true);
             center = cc.p(center.x, lastCenter.y+processingTime*SLICE_SIZE/2);
@@ -1034,7 +1066,6 @@ var PreemptiveGameWorld = cc.Layer.extend({
         segmentSprite.setPosition(center);
         this.addChild(segmentSprite);
         this.segmentSprites[segmentId] = segmentSprite;
-        this.segmentSpritePositions[segmentId] = center;
         this.segmentSpritePositions[segmentId] = center;
 
         //adjust split segment center

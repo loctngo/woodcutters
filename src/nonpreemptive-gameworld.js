@@ -660,8 +660,8 @@ var NonPreemptiveGameWorld = cc.Layer.extend({
             var processingTime = this.facility.jobs[jobId].processingTime;
             //push the job to the unassigned jobs
             this.jobSprites[jobId].removeFromParent(true);
-            this.jobSprites[jobId] = null;
-            this.jobSpritePositions[jobId] = null;
+            delete this.jobSprites[jobId];
+            delete this.jobSpritePositions[jobId];
 
             //pull the after jobs down to the job's bottom
             var machineId = this.facility.getAssignedMachineId(jobId);
@@ -735,8 +735,8 @@ var NonPreemptiveGameWorld = cc.Layer.extend({
                 else
                     center = cc.pSub(center,cc.p(SLICE_SIZE/2,0));
                 this.jobSprites[jobId].runAction(cc.Sequence.create(cc.MoveTo.create(0.25,center), cc.FadeOut.create(0.25), cc.RemoveSelf.create(true)));
-                this.jobSpritePositions[jobId] = null;
-                this.jobSprites[jobId] = null;
+                delete this.jobSprites[jobId];
+                delete this.jobSpritePositions[jobId];
 
                 var index = -1;
                 for(var i=0; i<this.facility.unassignedJobIds.length; i++)

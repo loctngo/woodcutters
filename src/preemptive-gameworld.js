@@ -644,7 +644,7 @@ var PreemptiveGameWorld = cc.Layer.extend({
                         //update UI
                         center = cc.pSub(center,cc.p(0,this.draggingSegmentLength/2*SLICE_SIZE));
                         this.segmentSprites[segmentId].removeFromParent(true);
-                        this.segmentSprites[segmentId] = null;
+                        delete this.segmentSprites[segmentId];
                         if(processingTime>0){
                             this.segmentSprites[segmentId] = cc.Sprite.create(WOODS[processingTime]);
                             this.segmentSprites[segmentId].setColor(this.facility.jobs[jobId].color);
@@ -863,8 +863,8 @@ var PreemptiveGameWorld = cc.Layer.extend({
             if(!conflict){
                 //push the job to the unassigned segments
                 this.segmentSprites[segmentId].removeFromParent(true);
-                this.segmentSprites[segmentId] = null;
-                this.segmentSpritePositions[segmentId] = null;
+                delete this.segmentSprites[segmentId];
+                delete this.segmentSpritePositions[segmentId];
 
                 //pull the after segments down to the segment's bottom
                 var machineId = this.facility.getAssignedMachineId(segmentId);
@@ -895,11 +895,11 @@ var PreemptiveGameWorld = cc.Layer.extend({
 	                    center = cc.pAdd(center,cc.p(0,currentSegment.processingTime*SLICE_SIZE/2));
 	                    
                 		this.segmentSprites[prevSegmentId].removeFromParent(true);
-                		this.segmentSprites[prevSegmentId] = null;
-                		this.segmentSpritePositions[prevSegmentId] = null;
+                		delete this.segmentSprites[prevSegmentId]
+                		delete this.segmentSpritePositions[prevSegmentId];
                 		this.segmentSprites[currentSegmentId].removeFromParent(true);
-                		this.segmentSprites[currentSegmentId] = null;
-                		this.segmentSpritePositions[currentSegmentId] = null;
+                		delete this.segmentSprites[currentSegmentId];
+                		delete this.segmentSpritePositions[currentSegmentId];
                 		
 	                    var segmentSprite = cc.Sprite.create(WOODS[_processingTime]);
 				        segmentSprite.setColor(this.facility.jobs[prevSegment.jobId].color);
@@ -925,7 +925,7 @@ var PreemptiveGameWorld = cc.Layer.extend({
                         this.facility.segments[unassignedSegmentId].processingTime += processingTime;
                         if(this.segmentSprites[unassignedSegmentId]){
                             this.segmentSprites[unassignedSegmentId].removeFromParent(true);
-                            this.segmentSprites[unassignedSegmentId] = null;
+                            delete this.segmentSprites[unassignedSegmentId];
                         }
                         delete this.facility.segments[segmentId];
                         segmentId = unassignedSegmentId;
@@ -991,8 +991,8 @@ var PreemptiveGameWorld = cc.Layer.extend({
                 else
                     center = cc.pSub(center,cc.p(SLICE_SIZE/2,0));
                 this.segmentSprites[segmentId].runAction(cc.Sequence.create(cc.MoveTo.create(0.25,center), cc.FadeOut.create(0.25), cc.RemoveSelf.create(true)));
-                this.segmentSpritePositions[segmentId] = null;
-                this.segmentSprites[segmentId] = null;
+                delete this.segmentSprites[segmentId];
+                delete this.segmentSpritePositions[segmentId];
 
                 var index = -1;
                 for(var i=0; i<this.facility.unassignedSegmentIds.length; i++)

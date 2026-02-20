@@ -112,17 +112,17 @@ function LeungYoung(P,m){
         //must be existing l & u such as: B[l] = true & B[u] = true & OFT-F[l] > P[i] > OFT-F[u+1]
         for(var l=0;l<m-1;l++){
             if(B[l]){
-            	var u = l+1;
-            	while(!B[u]){
-            		u++;
-            	}
-            	if(P[i] > OFT-F[u]){
-	            	F[l] += P[i] - (OFT-F[u]);
-	                F[u] = OFT;
-	                C[i] = OFT;
-	                B[u] = false;
-	                break;
-            	}
+                var u = l+1;
+                while(!B[u]){
+                    u++;
+                }
+                if(P[i] > OFT-F[u]){
+                    F[l] += P[i] - (OFT-F[u]);
+                    F[u] = OFT;
+                    C[i] = OFT;
+                    B[u] = false;
+                    break;
+                }
             }
         }
     }
